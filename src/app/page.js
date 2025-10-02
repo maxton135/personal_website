@@ -9,11 +9,12 @@ const timelineData = [
     period: 'July 2023 - Present',
     title: 'Software Engineer II',
     type: 'present',
+    expandText: "Check out the projects I worked on →",
     content: {
       title: "Software Engineer II",
-      subtitle: "Digital Dynamics Inc. • Semiconductor Fabrication",
-      description: "Leading firmware and full-stack development for I/O controllers in semiconductor fabrication. Built diagnostics frameworks, web applications, and large-scale testing infrastructure that reduced customer issue resolution from days to minutes.",
-      highlights: ["Firmware Development", "Vue/React Apps", "Large-Scale Testing", "Zynq-7000 SoC"],
+      subtitle: "Digital Dynamics Inc. • Semiconductor Manufacturing",
+      description: "Started as a college student working on a senior project sponsored by DDI. Now I'm a full-time engineer here. The past two years here have been of constant learning and development, and now I can confidently say I am a true software engineer.",
+      highlights: ["Full Stack Engineer", "Embedded Firmware Development (C)", "Web Development (JavaScript)", "Test Development (Python)"],
       expandedDescription: [
         "As a Software Engineer II at Digital Dynamics Inc., I lead critical firmware and full-stack development initiatives for I/O controllers used in semiconductor fabrication equipment.",
         "My work directly impacts manufacturing efficiency by developing robust diagnostics frameworks that enable rapid issue identification and resolution.",
@@ -54,6 +55,7 @@ const timelineData = [
     period: 'Feb 2022 - Aug 2022',
     title: 'Freelance Web Developer',
     type: 'experience',
+    expandText: "See my freelance work →",
     content: {
       title: "Freelance Web Developer",
       subtitle: "Delica SF • Restaurant/Food Service",
@@ -99,6 +101,7 @@ const timelineData = [
     period: 'Dec 2022 - Feb 2023',
     title: 'Software Engineer Intern',
     type: 'experience',
+    expandText: "Explore AI internship →",
     content: {
       title: "Software Engineer Intern",
       subtitle: "Klarity Intelligence Inc. • AI Revenue Accounting",
@@ -144,6 +147,7 @@ const timelineData = [
     period: 'Jun 2021 - Oct 2021',
     title: 'E-Commerce & Operations',
     type: 'experience',
+    expandText: "View operations role →",
     content: {
       title: "E-Commerce & Operations",
       subtitle: "Good Roots • Snack Chip Manufacturer",
@@ -189,6 +193,7 @@ const timelineData = [
     period: '2019 - 2023',
     title: 'Computer Science Degree',
     type: 'education',
+    expandText: "Discover my education →",
     content: {
       title: "Bachelor of Science in Computer Science",
       subtitle: "UC Santa Cruz • 3.5 GPA",
@@ -304,11 +309,11 @@ function ExpandedSectionView({ section, onClose }) {
     >
       {/* Background image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
         style={{ backgroundImage: `url(/backgrounds/${section.id}.jpg)` }}
       />
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
       {/* Content */}
       <div className={`relative h-full overflow-y-auto transform transition-all duration-300 ${
@@ -870,7 +875,7 @@ export default function Home() {
       {/* Timeline sections */}
       {timelineData.map((item, index) => {
         const visibility = sectionVisibility[item.id];
-        const backgroundOpacity = visibility ? visibility.opacity * 0.7 : 0; // Scale down for better text readability
+        const backgroundOpacity = visibility ? visibility.opacity * 0.9 : 0; // Higher opacity for more vibrant images
 
         return (
           <section key={item.id} id={item.id} className="snap-start h-screen flex items-center justify-center relative z-10">
@@ -882,7 +887,7 @@ export default function Home() {
                 opacity: backgroundOpacity
               }}
             />
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-black/40" />
 
             <TimelineSection
               className="w-full relative z-10"
@@ -900,9 +905,8 @@ export default function Home() {
 
                 {/* Click to expand indicator */}
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="bg-blue-600/90 text-white px-3 py-1 rounded-full font-mono text-xs flex items-center space-x-1">
-                    <span>Click to expand</span>
-                    <span className="text-lg">→</span>
+                  <div className="bg-blue-600/90 text-white px-4 py-2 rounded-full font-mono text-sm flex items-center">
+                    <span>{item.expandText || "Click to expand →"}</span>
                   </div>
                 </div>
 
