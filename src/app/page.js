@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 const timelineData = [
   {
     id: 'present',
-    year: '2024',
+    year: 'Current Role',
     period: 'July 2023 - Present',
     title: 'Software Engineer II',
     type: 'present',
-    expandText: "Check out the projects I worked on →",
+    expandText: "Check out my DDI projects →",
     content: {
       title: "Software Engineer II",
       subtitle: "Digital Dynamics Inc. • Semiconductor Manufacturing",
