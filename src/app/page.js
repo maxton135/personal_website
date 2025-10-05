@@ -15,12 +15,6 @@ const timelineData = [
       subtitle: "Digital Dynamics Inc. • Semiconductor Manufacturing",
       description: "Started as a college student working on a senior project sponsored by DDI. Now I'm a full-time engineer here. The past two years here have been of constant learning and development, and now I can confidently say I am a true software engineer.",
       highlights: ["Full Stack Engineer", "Embedded Firmware Development (C)", "Web Development (JavaScript)", "Test Development (Python)"],
-      expandedDescription: [
-        "As a Software Engineer II at Digital Dynamics Inc., I lead critical firmware and full-stack development initiatives for I/O controllers used in semiconductor fabrication equipment.",
-        "My work directly impacts manufacturing efficiency by developing robust diagnostics frameworks that enable rapid issue identification and resolution.",
-        "I architect and implement comprehensive testing infrastructure that supports large-scale validation of embedded systems, ensuring reliability in high-stakes manufacturing environments.",
-        "Through innovative web application development, I've created intuitive interfaces that allow engineers to monitor, configure, and troubleshoot complex semiconductor fabrication equipment in real-time."
-      ],
       keyAchievements: [
         "Reduced customer issue resolution time from days to minutes through comprehensive diagnostics framework",
         "Architected large-scale testing infrastructure supporting 100+ concurrent device validation",
@@ -35,16 +29,47 @@ const timelineData = [
       ],
       projects: [
         {
-          name: "Real-time Diagnostics Framework",
-          description: "Built comprehensive diagnostics system for semiconductor fabrication equipment with sub-millisecond response times"
+          name: "Firmware Developer",
+          description: "Contributed as a firmware engineer across all phases of the product lifecycle, from testing and feature development to resolving customer issues, working with both bare-metal and Linux applications on the Zynq-7000 SoC in Fusion products.",
+          tag: "ROLE"
         },
         {
-          name: "Equipment Configuration Portal",
-          description: "Developed full-stack web application for remote equipment configuration and monitoring"
+          name: "Full-stack Web Developer",
+          description: "Contributed as a web applications engineer, creating 5+ full-stack web applications enhancing internal processes and providing intuitive tools for customers and internal teams company wide.",
+          tag: "ROLE"
         },
         {
-          name: "Automated Testing Infrastructure",
-          description: "Designed scalable testing platform supporting parallel validation of embedded firmware across multiple device types"
+          name: "Product Diagnostics Framework",
+          description: "Designed and developed the firmware diagnostics framework for all Fusion products, enabling customers to independently resolve issues without contacting engineering, reducing resolution times from days to minutes.",
+          image: "system-log.jpg",
+          imageCaption: "Some of the logs produced through the diagnostics framework I created",
+          tag: "PROJECT"
+        },
+        {
+          name: "On-Board Diagnostics Webpage",
+          description: "Designed and implemented a firmware-hosted webpage with live system information, serving as the primary resource for understanding and debugging system behavior for customers and internal teams company wide.",
+          image: "fobd.jpg",
+          imageCaption: "Webpage I built that would pop up when user plugs into our system",
+          tag: "PROJECT"
+        },
+        {
+          name: "Large-scale Testing Design",
+          description: "Proposed and built a network of 100+ Raspberry Pis and 100+ Fusions for large-scale testing, enabling early capture of firmware and hardware bugs and establishing a critical step in all software and hardware release cycles.",
+          image: "mtbf-rack.png",
+          imageCaption: "Some of the systems I built as part of large-scale testing",
+          tag: "PROJECT"
+        },
+        {
+          name: "Large-scale Testing Interface",
+          description: "Implemented a full-stack web application for batch-controlling and monitoring the large-scale testing network, reducing test setup and data collection time by 90%; built with a Vue frontend and RESTful backend.",
+          image: "mtbf-test-hub.png",
+          imageCaption: "Webapp I created to control the large-scale testing systems",
+          tag: "PROJECT"
+        },
+        {
+          name: "Manufacturing Fixture Software",
+          description: "Developed the software for three manufacturing fixtures, using a Python pipeline to interface with hardware to electrically validate components, and using a Vue frontend to display results and instructions to operators.",
+          tag: "PROJECT"
         }
       ]
     }
@@ -318,8 +343,8 @@ function ExpandedSectionView({ section, onClose }) {
       {/* Content */}
       <div className={`relative h-full overflow-y-auto transform transition-all duration-300 ${
         isVisible ? 'translate-y-0 scale-100' : 'translate-y-4 scale-95'
-      }`}>
-        <div className="min-h-screen p-6 pt-16">
+      }`} style={{ scrollBehavior: 'smooth' }}>
+        <div className="min-h-screen">
           {/* Close button */}
           <button
             onClick={handleClose}
@@ -328,93 +353,130 @@ function ExpandedSectionView({ section, onClose }) {
             ×
           </button>
 
-          {/* Main content container */}
-          <div className={`max-w-6xl mx-auto ${isVisible ? 'expanded-entrance' : ''}`}>
-            {/* Header */}
-            <div className="text-center mb-12">
-              <div className="inline-block bg-blue-600 text-white px-6 py-3 rounded-full font-mono text-lg font-bold mb-4">
-                {section.year}
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 font-mono">
-                {section.content.title}
-              </h1>
-              <h2 className="text-2xl text-blue-300 mb-6 font-mono">
-                {section.content.subtitle}
-              </h2>
-              <div className="text-blue-400 font-mono text-lg">
-                {section.period}
-              </div>
-            </div>
+          {/* Header and Projects - Continuous Flow */}
+          <div className="py-20 px-6">
+            <div className={`max-w-4xl mx-auto text-center ${isVisible ? 'expanded-entrance' : ''}`}>
+              {/* Header */}
+              <div className="mb-16">
+                <div className="inline-block bg-blue-600 text-white px-6 py-3 rounded-full font-mono text-lg font-bold mb-4">
+                  {section.year}
+                </div>
+                <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 font-mono">
+                  {section.content.title}
+                </h1>
+                <h2 className="text-2xl text-blue-300 mb-6 font-mono">
+                  {section.content.subtitle}
+                </h2>
+                <div className="text-blue-400 font-mono text-lg mb-8">
+                  {section.period}
+                </div>
 
-            {/* Expanded description */}
-            <div className="mb-12">
-              <h3 className="text-2xl font-bold text-white mb-6 font-mono">Overview</h3>
-              <div className="space-y-4">
-                {section.content.expandedDescription.map((paragraph, index) => (
-                  <p key={index} className="text-gray-300 text-lg leading-relaxed font-mono">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            {/* Key achievements */}
-            <div className="mb-12">
-              <h3 className="text-2xl font-bold text-white mb-6 font-mono">Key Achievements</h3>
-              <div className="grid gap-4">
-                {section.content.keyAchievements.map((achievement, index) => (
-                  <div key={index} className="bg-black/60 border border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold mt-1">
-                        {index + 1}
-                      </div>
-                      <p className="text-gray-300 font-mono leading-relaxed">
-                        {achievement}
-                      </p>
+                {/* Expanded Description */}
+                {section.content.expandedDescription && (
+                  <div className="mb-12">
+                    <div className="space-y-4 max-w-4xl mx-auto">
+                      {section.content.expandedDescription.map((paragraph, index) => (
+                        <p key={index} className="text-gray-300 text-lg leading-relaxed font-mono">
+                          {paragraph}
+                        </p>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
+              </div>
+
+              {/* Projects - Using timelineData */}
+              <div className="space-y-12">
+                {section.content.projects.map((project, index) => {
+                  // If project has a tag, display it in a card format
+                  if (project.tag) {
+                    return (
+                      <div key={index} className="max-w-4xl mx-auto">
+                        <div className="bg-black/60 border border-gray-700 rounded-lg p-8 hover:border-gray-500 transition-colors">
+                          {/* Tag */}
+                          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono font-bold mb-4 w-fit">
+                            {project.tag}
+                          </div>
+
+                          {/* Project Content */}
+                          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono">
+                            {project.name}
+                          </h3>
+                          <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6">
+                            {project.description}
+                          </p>
+
+                          {/* Project Image */}
+                          {project.image && (
+                            <div className="relative group">
+                              <img
+                                src={`/projects/${project.image}`}
+                                alt={project.name}
+                                className="w-full object-contain rounded-lg border border-gray-600"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                              {project.imageCaption && (
+                                <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                  <p className="text-white text-center px-4 py-2 font-mono text-sm leading-relaxed">
+                                    {project.imageCaption}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Regular format for projects without tags
+                  return (
+                    <div key={index} className="text-left max-w-3xl mx-auto">
+                      {/* Project Content */}
+                      <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono">
+                        {project.name}
+                      </h3>
+                      <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6">
+                        {project.description}
+                      </p>
+
+                      {/* Project Image */}
+                      {project.image && (
+                        <div className="relative group">
+                          <img
+                            src={`/projects/${project.image}`}
+                            alt={project.name}
+                            className="w-full object-contain rounded-lg border border-gray-700"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                          {project.imageCaption && (
+                            <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                              <p className="text-white text-center px-4 py-2 font-mono text-sm leading-relaxed">
+                                {project.imageCaption}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
+          </div>
 
-            {/* Technologies */}
-            <div className="mb-12">
-              <h3 className="text-2xl font-bold text-white mb-6 font-mono">Technologies & Skills</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {section.content.technologies.map((tech, index) => (
-                  <div key={index} className="bg-gray-800/70 hover:bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-2 text-center transition-colors">
-                    <span className="text-white font-mono text-sm">{tech}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Projects */}
-            <div className="mb-12">
-              <h3 className="text-2xl font-bold text-white mb-6 font-mono">Notable Projects</h3>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {section.content.projects.map((project, index) => (
-                  <div key={index} className="bg-black/60 border border-gray-700 rounded-lg p-6 hover:border-gray-500 transition-colors">
-                    <h4 className="text-xl font-bold text-white mb-3 font-mono">
-                      {project.name}
-                    </h4>
-                    <p className="text-gray-300 font-mono leading-relaxed">
-                      {project.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Back to timeline button */}
-            <div className="text-center pb-12">
-              <button
-                onClick={handleClose}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-mono text-lg transition-colors hover:scale-105 transform duration-200"
-              >
-                ← Back to Timeline
-              </button>
-            </div>
+          {/* Back Section */}
+          <div className="py-20 text-center">
+            <button
+              onClick={handleClose}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-mono text-lg transition-colors hover:scale-105 transform duration-200"
+            >
+              ← Back to Timeline
+            </button>
           </div>
         </div>
       </div>
