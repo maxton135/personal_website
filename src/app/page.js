@@ -70,6 +70,9 @@ const timelineData = [
           name: "Manufacturing Fixture Software",
           description: "Developed the software for three manufacturing fixtures, using a Python pipeline to interface with hardware to electrically validate components, and using a Vue frontend to display results and instructions to operators.",
           tag: "PROJECT"
+        },
+        {
+          name: "and much more..."
         }
       ]
     }
@@ -86,19 +89,6 @@ const timelineData = [
       subtitle: "Delica SF • Restaurant/Food Service",
       description: "Designed and launched a complete restaurant website with online ordering, payment processing, and admin management platform. Increased sales by 20% and streamlined operations for both customers and staff.",
       highlights: ["NextJS/React", "Square API", "SQLite Database", "Order Management"],
-      expandedDescription: [
-        "Led full-stack development of a comprehensive restaurant management platform for Delica SF, transforming their digital presence and operational efficiency.",
-        "Architected and implemented a complete online ordering system with real-time inventory management and payment processing integration.",
-        "Developed intuitive admin interfaces for restaurant staff to manage orders, update menus, and track sales analytics.",
-        "Delivered measurable business impact with 20% sales increase and significantly improved customer satisfaction through streamlined ordering process."
-      ],
-      keyAchievements: [
-        "Increased restaurant sales by 20% through optimized online ordering platform",
-        "Reduced order processing time by 60% with automated workflow management",
-        "Implemented secure payment processing handling $50K+ monthly transactions",
-        "Built responsive design supporting 95% mobile user base",
-        "Delivered project 2 weeks ahead of schedule under $10K budget"
-      ],
       technologies: [
         "Next.js", "React", "JavaScript", "SQLite", "Square API", "Stripe",
         "CSS3", "HTML5", "Node.js", "Express.js", "REST APIs", "Responsive Design",
@@ -106,16 +96,22 @@ const timelineData = [
       ],
       projects: [
         {
-          name: "Online Ordering Platform",
-          description: "Full-featured ordering system with cart management, real-time pricing, and order tracking"
+          name: "Restaurant Website",
+          description: "Created the website for DELICA SF restaurant.",
+          image: "delica-home.png",
+          tag: "Project"
+        },
+        {
+          name: "Online Ordering",
+          description: "Designed, developed, and launched a restaurant website with online ordering and payment processing, increasing sales by 20%, expanding store outreach, and saving time for both customers and staff.",
+          image: "delica-payment.png",
+          tag: "Feature"
         },
         {
           name: "Restaurant Admin Dashboard",
-          description: "Comprehensive management interface for menu updates, order processing, and sales analytics"
-        },
-        {
-          name: "Payment Integration System",
-          description: "Secure payment processing with Square API integration and automated receipt generation"
+          description: "Implemented an admin management platform with store controls, menu management, and announcement features, giving managers full dynamic control over the online storefront.",
+          image: "delica-admin.png",
+          tag: "Feature"
         }
       ]
     }
@@ -392,17 +388,17 @@ function ExpandedSectionView({ section, onClose }) {
                   if (project.tag) {
                     return (
                       <div key={index} className="max-w-4xl mx-auto">
-                        <div className="bg-black/60 border border-gray-700 rounded-lg p-8 hover:border-gray-500 transition-colors">
+                        <div className="bg-black/60 border border-gray-700 rounded-lg p-8 hover:border-gray-500 transition-colors text-left">
                           {/* Tag */}
                           <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono font-bold mb-4 w-fit">
                             {project.tag}
                           </div>
 
                           {/* Project Content */}
-                          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono">
+                          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono text-left">
                             {project.name}
                           </h3>
-                          <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6">
+                          <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6 text-left">
                             {project.description}
                           </p>
 
