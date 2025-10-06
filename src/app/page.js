@@ -13,7 +13,7 @@ const timelineData = [
     period: 'July 2023 - Present',
     title: 'Software Engineer II',
     type: 'present',
-    expandText: "Check out my DDI projects →",
+    expandText: "Check out my DDI projects",
     content: {
       title: "Software Engineer II",
       subtitle: "Digital Dynamics Inc. • Semiconductor Manufacturing",
@@ -83,11 +83,11 @@ const timelineData = [
   },
   {
     id: 'freelance-work',
-    year: '2022',
-    period: 'Feb 2022 - Aug 2022',
+    year: 'Recent',
+    period: 'Feb 2025 – Aug 2025',
     title: 'Freelance Web Developer',
     type: 'experience',
-    expandText: "See my freelance work →",
+    expandText: "Checkout the website features",
     content: {
       title: "Freelance Web Developer",
       subtitle: "Delica SF • Restaurant/Food Service",
@@ -126,7 +126,7 @@ const timelineData = [
     period: 'Dec 2022 - Feb 2023',
     title: 'Software Engineer Intern',
     type: 'experience',
-    expandText: "Explore AI internship →",
+    expandText: "Check out my internship projects",
     content: {
       title: "Software Engineer Intern",
       subtitle: "Klarity Intelligence Inc. • AI Revenue Accounting",
@@ -157,7 +157,7 @@ const timelineData = [
     period: 'Jun 2021 - Oct 2021',
     title: 'E-Commerce & Operations',
     type: 'experience',
-    expandText: "View operations role →",
+    expandText: "View job details",
     content: {
       title: "E-Commerce & Operations",
       subtitle: "Good Roots • Snack Chip Manufacturer",
@@ -178,52 +178,6 @@ const timelineData = [
           name: "Interactive Store Locator",
           description: "Developed customer-facing tool to find retail locations carrying Good Roots products",
           tag: "Project"
-        }
-      ]
-    }
-  },
-  {
-    id: 'education',
-    year: '2019',
-    period: '2019 - 2023',
-    title: 'Computer Science Degree',
-    type: 'education',
-    expandText: "Discover my education →",
-    content: {
-      title: "Bachelor of Science in Computer Science",
-      subtitle: "UC Santa Cruz • 3.5 GPA",
-      description: "Comprehensive computer science education covering algorithms, data structures, software engineering, and systems programming. Built strong foundation in both theoretical concepts and practical implementation.",
-      highlights: ["Data Structures & Algorithms", "Software Engineering", "Systems Programming", "Academic Projects"],
-      expandedDescription: [
-        "Completed a rigorous Computer Science program at UC Santa Cruz, maintaining a 3.5 GPA while building a comprehensive foundation in software engineering principles.",
-        "Developed expertise in algorithms, data structures, and systems programming through challenging coursework and hands-on projects.",
-        "Gained practical experience in software engineering methodologies, including agile development, version control, and collaborative programming.",
-        "Participated in research projects and group collaborations that enhanced both technical skills and teamwork abilities."
-      ],
-      keyAchievements: [
-        "Graduated with 3.5 GPA in Computer Science program",
-        "Completed advanced coursework in algorithms and data structures",
-        "Led team projects in software engineering and systems design",
-        "Participated in undergraduate research in distributed systems",
-        "Tutored fellow students in programming fundamentals and data structures"
-      ],
-      technologies: [
-        "Java", "C/C++", "Python", "JavaScript", "SQL", "Assembly Language",
-        "Git", "Linux/Unix", "Data Structures", "Algorithms", "Software Engineering",
-        "Database Design", "Computer Networks", "Operating Systems", "Discrete Mathematics"
-      ],
-      projects: [
-        {
-          name: "Distributed File System",
-          description: "Implemented fault-tolerant distributed file system with replication and consistency protocols"
-        },
-        {
-          name: "Compiler Design Project",
-          description: "Built complete compiler for subset of C language including lexical analysis, parsing, and code generation"
-        },
-        {
-          name: "Database Management System",
-          description: "Designed and implemented relational database with B+ tree indexing and query optimization"
         }
       ]
     }
@@ -484,11 +438,21 @@ export default function Home() {
         /* Enhanced transitions for timeline sections */
         .timeline-section {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .timeline-section:hover {
-          transform: scale(1.02) translateY(-5px);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+          transform: scale(1.03) translateY(-8px);
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .timeline-section:active {
+          transform: scale(1.01) translateY(-2px);
+        }
+
+        .timeline-section:focus {
+          outline: 2px solid #3b82f6;
+          outline-offset: 4px;
         }
 
         /* Smooth expand animation */
@@ -545,7 +509,6 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono">
             <span className="text-gray-200">📧 maxton135@gmail.com</span>
             <span className="text-gray-200">📍 San Francisco, CA</span>
-            <span className="text-gray-200">📞 415-308-4524</span>
           </div>
           <div className="text-sm text-gray-200 font-mono">
             ↓ Scroll to travel back through my career ↓
@@ -565,6 +528,16 @@ export default function Home() {
               <div
                 className="timeline-section bg-black/80 backdrop-blur-sm rounded-lg p-8 border border-gray-800 relative cursor-pointer hover:border-gray-600 hover:bg-black/90 group"
                 onClick={() => handleSectionClick(item.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSectionClick(item.id);
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-label={`View details for ${item.title} position. ${item.expandText || "Click to expand"}`}
+                aria-describedby={`desc-${item.id}`}
               >
                 {/* Year badge */}
                 <div className="absolute -top-4 -left-4 bg-blue-600 text-white px-4 py-2 rounded-full font-mono text-sm font-bold">
@@ -572,9 +545,10 @@ export default function Home() {
                 </div>
 
                 {/* Click to expand indicator */}
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="bg-blue-600/90 text-white px-4 py-2 rounded-full font-mono text-sm flex items-center">
-                    <span>{item.expandText || "Click to expand →"}</span>
+                <div className="absolute top-4 right-4 opacity-70 group-hover:opacity-100 transition-all duration-300">
+                  <div className="bg-blue-600/90 text-white px-3 py-2 rounded-full font-mono text-sm flex items-center gap-2 expand-indicator">
+                    <span>{item.expandText || "Click to expand"}</span>
+                    <span className="text-blue-200 transition-transform group-hover:translate-x-1">→</span>
                   </div>
                 </div>
 
@@ -590,7 +564,7 @@ export default function Home() {
                 <h3 className="text-xl text-blue-300 mb-6 font-mono">
                   {item.content.subtitle}
                 </h3>
-                <p className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
+                <p id={`desc-${item.id}`} className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
                   {item.content.description}
                 </p>
 
