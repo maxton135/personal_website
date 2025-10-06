@@ -309,7 +309,7 @@ function ExpandedSectionView({ section, onClose }) {
                   <div className="mb-12">
                     <div className="space-y-4 max-w-4xl mx-auto">
                       {section.content.expandedDescription.map((paragraph, index) => (
-                        <p key={index} className="text-gray-300 text-lg leading-relaxed font-mono">
+                        <p key={index} className="text-gray-100 text-lg leading-relaxed font-mono">
                           {paragraph}
                         </p>
                       ))}
@@ -335,7 +335,7 @@ function ExpandedSectionView({ section, onClose }) {
                           <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono text-left">
                             {project.name}
                           </h3>
-                          <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6 text-left">
+                          <p className="text-gray-100 text-lg leading-relaxed font-mono mb-6 text-left">
                             {project.description}
                           </p>
 
@@ -371,7 +371,7 @@ function ExpandedSectionView({ section, onClose }) {
                       <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono">
                         {project.name}
                       </h3>
-                      <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6">
+                      <p className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
                         {project.description}
                       </p>
 
@@ -462,7 +462,7 @@ export default function Home() {
       {/* Dither Background */}
       <div className="fixed inset-0 z-0">
         <Dither
-          waveColor={[0.2, 0.5, 0.9]}
+          waveColor={[0.0, 0.3, 0.5]}
           disableAnimation={false}
           enableMouseInteraction={true}
           mouseRadius={0.8}
@@ -472,6 +472,8 @@ export default function Home() {
           waveSpeed={0.08}
           pixelSize={3}
         />
+        {/* Overlay layer for cool effect */}
+        <div className="absolute inset-0 bg-black/40" />
         {/* Fallback background for devices that don't support WebGL */}
         <div className="absolute inset-0 bg-black -z-10" />
       </div>
@@ -531,21 +533,21 @@ export default function Home() {
       <section id="welcome" className="snap-start h-screen flex items-center justify-center relative z-10">
 
         <div className="text-center max-w-4xl px-6 relative z-10">
-          <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono opacity-80">
+          <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono">
             Maxton Lenox
           </div>
           <div className="text-xl text-blue-400 font-mono mb-6">
             Full-Stack Software Engineer
           </div>
-          <div className="text-lg text-gray-300 font-mono mb-8 max-w-3xl mx-auto leading-relaxed">
+          <div className="text-lg text-gray-100 font-mono mb-8 max-w-3xl mx-auto leading-relaxed">
             Firmware • Embedded Systems • Web Development
           </div>
           <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono">
-            <span className="text-gray-400">📧 maxton135@gmail.com</span>
-            <span className="text-gray-400">📍 San Francisco, CA</span>
-            <span className="text-gray-400">📞 415-308-4524</span>
+            <span className="text-gray-200">📧 maxton135@gmail.com</span>
+            <span className="text-gray-200">📍 San Francisco, CA</span>
+            <span className="text-gray-200">📞 415-308-4524</span>
           </div>
-          <div className="text-sm text-gray-500 font-mono">
+          <div className="text-sm text-gray-200 font-mono">
             ↓ Scroll to travel back through my career ↓
           </div>
         </div>
@@ -588,7 +590,7 @@ export default function Home() {
                 <h3 className="text-xl text-blue-300 mb-6 font-mono">
                   {item.content.subtitle}
                 </h3>
-                <p className="text-gray-300 text-lg leading-relaxed font-mono mb-6">
+                <p className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
                   {item.content.description}
                 </p>
 
@@ -603,7 +605,7 @@ export default function Home() {
 
                 {/* Progress indicator */}
                 <div className="flex justify-center mt-8">
-                  <div className="text-gray-500 font-mono text-xs">
+                  <div className="text-gray-200 font-mono text-xs">
                     {index + 1} of {timelineData.length}
                   </div>
                 </div>
