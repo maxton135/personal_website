@@ -519,7 +519,9 @@ export default function Home() {
       {/* Timeline sections */}
       {timelineData.map((item, index) => {
         return (
-          <section key={item.id} id={item.id} className="snap-start h-screen flex items-center justify-center relative z-10">
+          <section key={item.id} id={item.id} className={`snap-start h-screen flex items-center justify-center relative z-10 transition-opacity duration-300 ${
+            expandedSection === item.id ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}>
 
             <TimelineSection
               className="w-full relative z-10"
