@@ -1,6 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import Dither to avoid SSR issues with Three.js
+const Dither = dynamic(() => import('../components/Dither'), { ssr: false });
 
 const timelineData = [
   {
@@ -226,43 +230,11 @@ const timelineData = [
   }
 ];
 
-function TimelineSection({ children, className = "", onVisibilityChange }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const [intersectionRatio, setIntersectionRatio] = useState(0);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const visible = entry.isIntersecting;
-        const ratio = entry.intersectionRatio;
-
-        setIsVisible(visible);
-        setIntersectionRatio(ratio);
-
-        // Call the parent callback with visibility data
-        if (onVisibilityChange) {
-          onVisibilityChange(visible, ratio);
-        }
-      },
-      {
-        threshold: Array.from({length: 21}, (_, i) => i * 0.05) // 0, 0.05, 0.1, ... 1.0
-      }
-    );
-
-    const element = document.querySelector(`[data-section="${children.props['data-section']}"]`);
-    if (element) {
-      observer.observe(element);
-    }
-
-    return () => observer.disconnect();
-  }, [children.props, onVisibilityChange]);
-
+function TimelineSection({ children, className = "" }) {
   return (
     <div
       data-section={children.props['data-section']}
-      className={`transition-all duration-1000 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-      } ${className}`}
+      className={`transition-all duration-1000 opacity-100 translate-y-0 ${className}`}
     >
       {children}
     </div>
@@ -298,13 +270,8 @@ function ExpandedSectionView({ section, onClose }) {
       }`}
       onClick={handleBackdropClick}
     >
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
-        style={{ backgroundImage: `url(/backgrounds/${section.id}.jpg)` }}
-      />
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
 
       {/* Content */}
       <div className={`relative h-full overflow-y-auto transform transition-all duration-300 ${
@@ -453,34 +420,13 @@ function ExpandedSectionView({ section, onClose }) {
 
 export default function Home() {
   const [expandedSection, setExpandedSection] = useState(null);
-  const [isExpanding, setIsExpanding] = useState(false);
-  const [sectionVisibility, setSectionVisibility] = useState({});
 
   const handleSectionClick = (sectionId) => {
-    setIsExpanding(true);
-    setTimeout(() => {
-      setExpandedSection(sectionId);
-      setIsExpanding(false);
-    }, 150);
+    setExpandedSection(sectionId);
   };
 
   const handleCloseExpanded = () => {
-    setIsExpanding(true);
-    setTimeout(() => {
-      setExpandedSection(null);
-      setIsExpanding(false);
-    }, 150);
-  };
-
-  const handleSectionVisibilityChange = (sectionId) => (isVisible, ratio) => {
-    setSectionVisibility(prev => ({
-      ...prev,
-      [sectionId]: {
-        isVisible,
-        ratio,
-        opacity: Math.max(0, Math.min(1, ratio * 1.2)) // Scale ratio for smoother fade
-      }
-    }));
+    setExpandedSection(null);
   };
 
   // Prevent body scroll when expanded
@@ -513,55 +459,25 @@ export default function Home() {
       className="snap-y snap-mandatory overflow-y-scroll h-screen"
       style={{ scrollBehavior: 'smooth' }}
     >
-      {/* Animated grid background */}
-      <div className="fixed inset-0 z-0 bg-black overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="grid-background"></div>
-        </div>
-        <div className="absolute inset-0 opacity-10">
-          <div className="floating-dots"></div>
-        </div>
+      {/* Dither Background */}
+      <div className="fixed inset-0 z-0">
+        <Dither
+          waveColor={[0.2, 0.5, 0.9]}
+          disableAnimation={false}
+          enableMouseInteraction={true}
+          mouseRadius={0.8}
+          colorNum={4}
+          waveAmplitude={0.4}
+          waveFrequency={2.5}
+          waveSpeed={0.08}
+          pixelSize={3}
+        />
+        {/* Fallback background for devices that don't support WebGL */}
+        <div className="absolute inset-0 bg-black -z-10" />
       </div>
 
-      {/* Custom CSS for background animations */}
+      {/* Custom CSS for timeline animations */}
       <style jsx>{`
-        .grid-background {
-          background-image:
-            linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-          background-size: 60px 60px;
-          width: 100%;
-          height: 100%;
-          animation: grid-move 20s linear infinite;
-        }
-
-        @keyframes grid-move {
-          0% {
-            transform: translate(0, 0);
-          }
-          100% {
-            transform: translate(60px, 60px);
-          }
-        }
-
-        .floating-dots {
-          background-image: radial-gradient(circle, rgba(59, 130, 246, 0.3) 2px, transparent 2px);
-          background-size: 120px 120px;
-          width: 100%;
-          height: 100%;
-          animation: dots-float 15s ease-in-out infinite;
-        }
-
-        @keyframes dots-float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 0.1;
-          }
-          50% {
-            transform: translateY(-20px) rotate(180deg);
-            opacity: 0.3;
-          }
-        }
 
         /* Enhanced transitions for timeline sections */
         .timeline-section {
@@ -613,12 +529,6 @@ export default function Home() {
 
       {/* Welcome section */}
       <section id="welcome" className="snap-start h-screen flex items-center justify-center relative z-10">
-        {/* Background image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(/backgrounds/hero-background.jpg)' }}
-        />
-        <div className="absolute inset-0 bg-black/50" />
 
         <div className="text-center max-w-4xl px-6 relative z-10">
           <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono opacity-80">
@@ -643,24 +553,11 @@ export default function Home() {
 
       {/* Timeline sections */}
       {timelineData.map((item, index) => {
-        const visibility = sectionVisibility[item.id];
-        const backgroundOpacity = visibility ? visibility.opacity * 0.9 : 0; // Higher opacity for more vibrant images
-
         return (
           <section key={item.id} id={item.id} className="snap-start h-screen flex items-center justify-center relative z-10">
-            {/* Background image with scroll-based fade */}
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-out"
-              style={{
-                backgroundImage: `url(/backgrounds/${item.id}.jpg)`,
-                opacity: backgroundOpacity
-              }}
-            />
-            <div className="absolute inset-0 bg-black/40" />
 
             <TimelineSection
               className="w-full relative z-10"
-              onVisibilityChange={handleSectionVisibilityChange(item.id)}
             >
             <div data-section={item.id} className="max-w-4xl mx-auto px-6">
               <div
