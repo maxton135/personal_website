@@ -6,6 +6,29 @@ import dynamic from 'next/dynamic';
 // Dynamically import Dither to avoid SSR issues with Three.js
 const Dither = dynamic(() => import('../components/Dither'), { ssr: false });
 
+const aboutMePhotos = [
+  {
+    image: "graduation.jpeg",
+    caption: "Graduated in 2023 from UCSC!"
+  },
+  {
+    image: "rowing.jpeg",
+    caption: "Placed 2nd in National Rowing Championships"
+  },
+  {
+    image: "ddi-team.jpeg",
+    caption: "The best software team"
+  },
+  {
+    image: "snowboarding.jpeg",
+    caption: "Shred."
+  },
+  {
+    image: "football-tackle.jpeg",
+    caption: "Cool tackle pic from highschool football"
+  },
+];
+
 const timelineData = [
   {
     id: 'present',
@@ -496,21 +519,26 @@ export default function Home() {
       {/* Welcome section */}
       <section id="welcome" className="snap-start h-screen flex items-center justify-center relative z-10">
 
-        <div className="text-center max-w-4xl px-6 relative z-10">
+        <div className="text-center max-w-5xl px-6 relative z-10">
           <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono">
             Maxton Lenox
           </div>
-          <div className="text-xl text-blue-400 font-mono mb-6">
+          <div className="text-2xl md:text-3xl text-blue-400 font-mono mb-8">
             Full-Stack Software Engineer
           </div>
-          <div className="text-lg text-gray-100 font-mono mb-8 max-w-3xl mx-auto leading-relaxed">
+          <div className="text-xl md:text-2xl text-gray-100 font-mono mb-10 max-w-4xl mx-auto leading-relaxed">
             Firmware • Embedded Systems • Web Development
           </div>
-          <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono">
-            <span className="text-gray-200">📧 maxton135@gmail.com</span>
+          <div className="flex flex-wrap justify-center gap-6 mb-10 text-base md:text-lg font-mono">
+            <a href="https://linkedin.com/in/maxtonlenox" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+              💼 LinkedIn
+            </a>
             <span className="text-gray-200">📍 San Francisco, CA</span>
+            <a href="https://github.com/maxton135" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+              🐙 GitHub
+            </a>
           </div>
-          <div className="text-sm text-gray-200 font-mono">
+          <div className="text-base md:text-lg text-gray-200 font-mono">
             ↓ Scroll to travel back through my career ↓
           </div>
         </div>
@@ -591,6 +619,37 @@ export default function Home() {
           </section>
         );
       })}
+
+      {/* More About Me Section */}
+      <section className="snap-start min-h-screen flex items-center justify-center relative z-10 py-20">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center font-mono">
+            More About Me
+          </h2>
+
+          <div className="space-y-8">
+            {aboutMePhotos.map((photo, index) => (
+              <div key={index} className="text-center">
+                <div className="relative group">
+                  <img
+                    src={`/about/${photo.image}`}
+                    alt={photo.caption}
+                    className="w-full object-contain rounded-lg border border-gray-700"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <p className="text-white text-center px-4 py-2 font-mono text-sm leading-relaxed">
+                      {photo.caption}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Expanded Section Modal */}
       {expandedSection && (
