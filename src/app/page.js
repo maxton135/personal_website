@@ -9,23 +9,23 @@ const Dither = dynamic(() => import('../components/Dither'), { ssr: false });
 const aboutMePhotos = [
   {
     image: "graduation.jpeg",
-    caption: "Graduated in 2023 from UCSC!"
+    caption: "2023 Graduation"
   },
   {
     image: "rowing.jpeg",
-    caption: "Placed 2nd in National Rowing Championships"
+    caption: "Scholastic National Rowing Championships 2019"
   },
   {
     image: "ddi-team.jpeg",
-    caption: "The best software team"
+    caption: "Sea Bright Bowling 2024"
   },
   {
     image: "snowboarding.jpeg",
-    caption: "Shred."
+    caption: "Heavenly 2025"
   },
   {
     image: "football-tackle.jpeg",
-    caption: "Cool tackle pic from highschool football"
+    caption: "Football Tackle 2019"
   },
 ];
 
@@ -397,6 +397,7 @@ function ExpandedSectionView({ section, onClose }) {
 
 export default function Home() {
   const [expandedSection, setExpandedSection] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   const handleSectionClick = (sectionId) => {
     setExpandedSection(sectionId);
@@ -406,9 +407,17 @@ export default function Home() {
     setExpandedSection(null);
   };
 
-  // Prevent body scroll when expanded
+  const handlePhotoClick = (photo) => {
+    setSelectedPhoto(photo);
+  };
+
+  const handleClosePhoto = () => {
+    setSelectedPhoto(null);
+  };
+
+  // Prevent body scroll when expanded or photo modal is open
   useEffect(() => {
-    if (expandedSection) {
+    if (expandedSection || selectedPhoto) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -417,25 +426,26 @@ export default function Home() {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [expandedSection]);
+  }, [expandedSection, selectedPhoto]);
 
-  // ESC key to close expanded view
+  // ESC key to close expanded view or photo modal
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && expandedSection) {
-        handleCloseExpanded();
+      if (e.key === 'Escape') {
+        if (selectedPhoto) {
+          handleClosePhoto();
+        } else if (expandedSection) {
+          handleCloseExpanded();
+        }
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [expandedSection]);
+  }, [expandedSection, selectedPhoto]);
 
   return (
-    <div
-      className="snap-y snap-mandatory overflow-y-scroll h-screen"
-      style={{ scrollBehavior: 'smooth' }}
-    >
+    <div>
       {/* Dither Background */}
       <div className="fixed inset-0 z-0">
         <Dither
@@ -514,142 +524,149 @@ export default function Home() {
         }
       `}</style>
 
-
-
-      {/* Welcome section */}
-      <section id="welcome" className="snap-start h-screen flex items-center justify-center relative z-10">
-
-        <div className="text-center max-w-5xl px-6 relative z-10">
-          <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono">
-            Maxton Lenox
+      {/* Timeline sections with snap behavior */}
+      <div
+        className="snap-y snap-mandatory overflow-y-scroll h-screen"
+        style={{ scrollBehavior: 'smooth' }}
+      >
+        {/* Welcome section */}
+        <section id="welcome" className="snap-start h-screen flex items-center justify-center relative z-10">
+          <div className="text-center max-w-5xl px-6 relative z-10">
+            <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono">
+              Maxton Lenox
+            </div>
+            <div className="text-2xl md:text-3xl text-blue-400 font-mono mb-8">
+              Full-Stack Software Engineer
+            </div>
+            <div className="text-xl md:text-2xl text-gray-100 font-mono mb-10 max-w-4xl mx-auto leading-relaxed">
+              Firmware • Embedded Systems • Web Development
+            </div>
+            <div className="flex flex-wrap justify-center gap-6 mb-10 text-base md:text-lg font-mono">
+              <a href="https://linkedin.com/in/maxtonlenox" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+                💼 LinkedIn
+              </a>
+              <span className="text-gray-200">📍 San Francisco, CA</span>
+              <a href="https://github.com/maxton135" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+                🐙 GitHub
+              </a>
+            </div>
+            <div className="text-base md:text-lg text-gray-200 font-mono">
+              ↓ Scroll to travel back through my career ↓
+            </div>
           </div>
-          <div className="text-2xl md:text-3xl text-blue-400 font-mono mb-8">
-            Full-Stack Software Engineer
-          </div>
-          <div className="text-xl md:text-2xl text-gray-100 font-mono mb-10 max-w-4xl mx-auto leading-relaxed">
-            Firmware • Embedded Systems • Web Development
-          </div>
-          <div className="flex flex-wrap justify-center gap-6 mb-10 text-base md:text-lg font-mono">
-            <a href="https://linkedin.com/in/maxtonlenox" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
-              💼 LinkedIn
-            </a>
-            <span className="text-gray-200">📍 San Francisco, CA</span>
-            <a href="https://github.com/maxton135" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
-              🐙 GitHub
-            </a>
-          </div>
-          <div className="text-base md:text-lg text-gray-200 font-mono">
-            ↓ Scroll to travel back through my career ↓
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Timeline sections */}
-      {timelineData.map((item, index) => {
-        return (
-          <section key={item.id} id={item.id} className={`snap-start h-screen flex items-center justify-center relative z-10 transition-opacity duration-300 ${
-            expandedSection === item.id ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}>
+        {/* Timeline sections */}
+        {timelineData.map((item, index) => {
+          return (
+            <section key={item.id} id={item.id} className={`snap-start h-screen flex items-center justify-center relative z-10 transition-opacity duration-300 ${
+              expandedSection === item.id ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            }`}>
 
-            <TimelineSection
-              className="w-full relative z-10"
-            >
-            <div data-section={item.id} className="max-w-4xl mx-auto px-6">
-              <div
-                className="timeline-section bg-black/80 backdrop-blur-sm rounded-lg p-8 border border-gray-800 relative cursor-pointer hover:border-gray-600 hover:bg-black/90 group"
-                onClick={() => handleSectionClick(item.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleSectionClick(item.id);
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`View details for ${item.title} position. ${item.expandText || "Click to expand"}`}
-                aria-describedby={`desc-${item.id}`}
+              <TimelineSection
+                className="w-full relative z-10"
               >
-                {/* Year badge */}
-                <div className="absolute -top-4 -left-4 bg-blue-600 text-white px-4 py-2 rounded-full font-mono text-sm font-bold">
-                  {item.year}
-                </div>
-
-                {/* Click to expand indicator */}
-                <div className="absolute top-4 right-4 opacity-70 group-hover:opacity-100 transition-all duration-300">
-                  <div className="bg-blue-600/90 text-white px-3 py-2 rounded-full font-mono text-sm flex items-center gap-2 expand-indicator">
-                    <span>{item.expandText || "Click to expand"}</span>
-                    <span className="text-blue-200 transition-transform group-hover:translate-x-1">→</span>
+              <div data-section={item.id} className="max-w-4xl mx-auto px-6">
+                <div
+                  className="timeline-section bg-black/80 backdrop-blur-sm rounded-lg p-8 border border-gray-800 relative cursor-pointer hover:border-gray-600 hover:bg-black/90 group"
+                  onClick={() => handleSectionClick(item.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleSectionClick(item.id);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View details for ${item.title} position. ${item.expandText || "Click to expand"}`}
+                  aria-describedby={`desc-${item.id}`}
+                >
+                  {/* Year badge */}
+                  <div className="absolute -top-4 -left-4 bg-blue-600 text-white px-4 py-2 rounded-full font-mono text-sm font-bold">
+                    {item.year}
                   </div>
-                </div>
 
-                {/* Period indicator */}
-                <div className="text-blue-400 font-mono text-sm mb-2">
-                  {item.period}
-                </div>
-
-                {/* Main content */}
-                <h2 className="text-4xl font-bold text-white mb-2 font-mono">
-                  {item.content.title}
-                </h2>
-                <h3 className="text-xl text-blue-300 mb-6 font-mono">
-                  {item.content.subtitle}
-                </h3>
-                <p id={`desc-${item.id}`} className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
-                  {item.content.description}
-                </p>
-
-                {/* Highlights */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {item.content.highlights.map((highlight, idx) => (
-                    <div key={idx} className="bg-gray-800/50 rounded-lg px-3 py-2 text-center">
-                      <span className="text-white font-mono text-sm">{highlight}</span>
+                  {/* Click to expand indicator */}
+                  <div className="absolute top-4 right-4 opacity-70 group-hover:opacity-100 transition-all duration-300">
+                    <div className="bg-blue-600/90 text-white px-3 py-2 rounded-full font-mono text-sm flex items-center gap-2 expand-indicator">
+                      <span>{item.expandText || "Click to expand"}</span>
+                      <span className="text-blue-200 transition-transform group-hover:translate-x-1">→</span>
                     </div>
-                  ))}
-                </div>
+                  </div>
 
-                {/* Progress indicator */}
-                <div className="flex justify-center mt-8">
-                  <div className="text-gray-200 font-mono text-xs">
-                    {index + 1} of {timelineData.length}
+                  {/* Period indicator */}
+                  <div className="text-blue-400 font-mono text-sm mb-2">
+                    {item.period}
+                  </div>
+
+                  {/* Main content */}
+                  <h2 className="text-4xl font-bold text-white mb-2 font-mono">
+                    {item.content.title}
+                  </h2>
+                  <h3 className="text-xl text-blue-300 mb-6 font-mono">
+                    {item.content.subtitle}
+                  </h3>
+                  <p id={`desc-${item.id}`} className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
+                    {item.content.description}
+                  </p>
+
+                  {/* Highlights */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {item.content.highlights.map((highlight, idx) => (
+                      <div key={idx} className="bg-gray-800/50 rounded-lg px-3 py-2 text-center">
+                        <span className="text-white font-mono text-sm">{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Progress indicator */}
+                  <div className="flex justify-center mt-8">
+                    <div className="text-gray-200 font-mono text-xs">
+                      {index + 1} of {timelineData.length}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            </TimelineSection>
-          </section>
-        );
-      })}
+              </TimelineSection>
+            </section>
+          );
+        })}
 
-      {/* More About Me Section */}
-      <section className="snap-start min-h-screen flex items-center justify-center relative z-10 py-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center font-mono">
-            More About Me
-          </h2>
+        {/* More About Me Section - Gallery */}
+        <section className="snap-start h-screen flex items-center justify-center relative z-10 py-20">
+          <div className="max-w-6xl mx-auto px-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center font-mono">
+              More About Me
+            </h2>
 
-          <div className="space-y-8">
-            {aboutMePhotos.map((photo, index) => (
-              <div key={index} className="text-center">
-                <div className="relative group">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              {aboutMePhotos.map((photo, index) => (
+                <div
+                  key={index}
+                  className="relative group cursor-pointer overflow-hidden rounded-lg border border-gray-700 hover:border-gray-500 transition-all duration-300 hover:scale-105"
+                  onClick={() => handlePhotoClick(photo)}
+                >
                   <img
                     src={`/about/${photo.image}`}
                     alt={photo.caption}
-                    className="w-full object-contain rounded-lg border border-gray-700"
+                    className="w-full h-48 md:h-56 object-cover"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
                   />
-                  <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <p className="text-white text-center px-4 py-2 font-mono text-sm leading-relaxed">
-                      {photo.caption}
-                    </p>
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="text-white text-center px-3 py-2 font-mono text-sm">
+                      <div className="bg-blue-600/90 px-3 py-1 rounded-full">
+                        View Photo
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {/* Expanded Section Modal */}
       {expandedSection && (
@@ -657,6 +674,44 @@ export default function Home() {
           section={timelineData.find(item => item.id === expandedSection)}
           onClose={handleCloseExpanded}
         />
+      )}
+
+      {/* Photo Modal */}
+      {selectedPhoto && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={handleClosePhoto}
+        >
+          <div
+            className="relative max-w-4xl max-h-[90vh] bg-black/90 rounded-lg overflow-hidden border border-gray-600"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={handleClosePhoto}
+              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/80 hover:bg-black/90 border border-gray-600 hover:border-gray-400 rounded-full flex items-center justify-center text-white text-lg transition-all duration-200 hover:scale-110"
+            >
+              ×
+            </button>
+
+            {/* Image */}
+            <img
+              src={`/about/${selectedPhoto.image}`}
+              alt={selectedPhoto.caption}
+              className="w-full h-auto max-h-[70vh] object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+
+            {/* Caption */}
+            <div className="p-6 text-center">
+              <p className="text-white font-mono text-lg leading-relaxed">
+                {selectedPhoto.caption}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>
