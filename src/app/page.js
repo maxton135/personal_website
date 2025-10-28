@@ -65,28 +65,28 @@ const timelineData = [
           name: "Product Diagnostics Framework",
           description: "Designed and developed the firmware diagnostics framework for all Fusion products, enabling customers to independently resolve issues without contacting engineering, reducing resolution times from days to minutes.",
           image: "system-log.jpg",
-          imageCaption: "Some of the logs produced through the diagnostics framework I created",
+          imageCaption: "Unified Fusion System Log File",
           tag: "PROJECT"
         },
         {
           name: "On-Board Diagnostics Webpage",
           description: "Designed and implemented a firmware-hosted webpage with live system information, serving as the primary resource for understanding and debugging system behavior for customers and internal teams company wide.",
           image: "fobd.jpg",
-          imageCaption: "Webpage I built that would pop up when user plugs into our system",
+          imageCaption: "Embedded Diagnostics Webpage",
           tag: "PROJECT"
         },
         {
           name: "Large-scale Testing Design",
           description: "Proposed and built a network of 100+ Raspberry Pis and 100+ Fusions for large-scale testing, enabling early capture of firmware and hardware bugs and establishing a critical step in all software and hardware release cycles.",
           image: "mtbf-rack.png",
-          imageCaption: "Some of the systems I built as part of large-scale testing",
+          imageCaption: "Large-scale Testing Units",
           tag: "PROJECT"
         },
         {
           name: "Large-scale Testing Interface",
           description: "Implemented a full-stack web application for batch-controlling and monitoring the large-scale testing network, reducing test setup and data collection time by 90%; built with a Vue frontend and RESTful backend.",
           image: "mtbf-test-hub.png",
-          imageCaption: "Webapp I created to control the large-scale testing systems",
+          imageCaption: "Large-scale Testing User Interface",
           tag: "PROJECT"
         },
         {
@@ -95,7 +95,7 @@ const timelineData = [
           tag: "PROJECT"
         },
         {
-          name: "and much more..."
+          name: "and more..."
         }
       ]
     }
@@ -120,7 +120,7 @@ const timelineData = [
       projects: [
         {
           name: "Restaurant Website",
-          description: "Created the website for DELICA SF restaurant.",
+          description: "DELICA SF Main Page.",
           image: "delica-home.png",
           tag: "Project"
         },
@@ -214,7 +214,7 @@ function TimelineSection({ children, className = "" }) {
   );
 }
 
-function ExpandedSectionView({ section, onClose }) {
+function ExpandedSectionView({ section, onClose, onPhotoClick }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -314,22 +314,22 @@ function ExpandedSectionView({ section, onClose }) {
 
                           {/* Project Image */}
                           {project.image && (
-                            <div className="relative group">
+                            <div className="relative group cursor-pointer" onClick={() => onPhotoClick({ image: project.image, caption: project.imageCaption, isProject: true })}>
                               <img
                                 src={`/projects/${project.image}`}
                                 alt={project.name}
-                                className="w-full object-contain rounded-lg border border-gray-600"
+                                className="w-full object-contain rounded-lg border border-gray-600 hover:border-gray-400 transition-colors"
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                 }}
                               />
-                              {project.imageCaption && (
-                                <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                  <p className="text-white text-center px-4 py-2 font-mono text-sm leading-relaxed">
-                                    {project.imageCaption}
-                                  </p>
+                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <div className="text-white text-center px-2 py-1 sm:px-3 sm:py-2 font-mono text-xs sm:text-sm">
+                                  <div className="bg-blue-600/90 px-2 py-1 sm:px-3 rounded-full">
+                                    View
+                                  </div>
                                 </div>
-                              )}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -350,22 +350,22 @@ function ExpandedSectionView({ section, onClose }) {
 
                       {/* Project Image */}
                       {project.image && (
-                        <div className="relative group">
+                        <div className="relative group cursor-pointer" onClick={() => onPhotoClick({ image: project.image, caption: project.imageCaption, isProject: true })}>
                           <img
                             src={`/projects/${project.image}`}
                             alt={project.name}
-                            className="w-full object-contain rounded-lg border border-gray-700"
+                            className="w-full object-contain rounded-lg border border-gray-700 hover:border-gray-400 transition-colors"
                             onError={(e) => {
                               e.target.style.display = 'none';
                             }}
                           />
-                          {project.imageCaption && (
-                            <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                              <p className="text-white text-center px-4 py-2 font-mono text-sm leading-relaxed">
-                                {project.imageCaption}
-                              </p>
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <div className="text-white text-center px-2 py-1 sm:px-3 sm:py-2 font-mono text-xs sm:text-sm">
+                              <div className="bg-blue-600/90 px-2 py-1 sm:px-3 rounded-full">
+                                View
+                              </div>
                             </div>
-                          )}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -720,6 +720,7 @@ export default function Home() {
         <ExpandedSectionView
           section={timelineData.find(item => item.id === expandedSection)}
           onClose={handleCloseExpanded}
+          onPhotoClick={handlePhotoClick}
         />
       )}
 
@@ -743,7 +744,7 @@ export default function Home() {
 
             {/* Image */}
             <img
-              src={`/about/${selectedPhoto.image}`}
+              src={selectedPhoto.isProject ? `/projects/${selectedPhoto.image}` : `/about/${selectedPhoto.image}`}
               alt={selectedPhoto.caption}
               className="w-full h-auto max-h-[60vh] sm:max-h-[70vh] object-contain"
               onError={(e) => {
