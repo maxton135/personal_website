@@ -1,10 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-
-// Dynamically import Dither to avoid SSR issues with Three.js
-const Dither = dynamic(() => import('../components/Dither'), { ssr: false });
 
 const aboutMePhotos = [
   {
@@ -398,6 +394,7 @@ function ExpandedSectionView({ section, onClose }) {
 export default function Home() {
   const [expandedSection, setExpandedSection] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const handleSectionClick = (sectionId) => {
     setExpandedSection(sectionId);
@@ -444,29 +441,68 @@ export default function Home() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [expandedSection, selectedPhoto]);
 
+  // Mouse tracking for cursor glow
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
     <div>
-      {/* Dither Background */}
-      <div className="fixed inset-0 z-0">
-        <Dither
-          waveColor={[0.0, 0.3, 0.5]}
-          disableAnimation={false}
-          enableMouseInteraction={true}
-          mouseRadius={0.8}
-          colorNum={4}
-          waveAmplitude={0.4}
-          waveFrequency={2.5}
-          waveSpeed={0.08}
-          pixelSize={3}
-        />
-        {/* Overlay layer for cool effect */}
-        <div className="absolute inset-0 bg-black/40" />
-        {/* Fallback background for devices that don't support WebGL */}
-        <div className="absolute inset-0 bg-black -z-10" />
-      </div>
+      {/* Black Background */}
+      <div className="fixed inset-0 z-0 bg-black" />
 
-      {/* Custom CSS for timeline animations */}
+      {/* Cursor Glow Effect */}
+      <div
+        className="cursor-glow hidden sm:block"
+        style={{
+          left: mousePosition.x - 200,
+          top: mousePosition.y - 200,
+        }}
+      />
+      <div
+        className="cursor-glow block sm:hidden"
+        style={{
+          left: mousePosition.x - 150,
+          top: mousePosition.y - 150,
+        }}
+      />
+
+      {/* Custom CSS for animations */}
       <style jsx>{`
+        /* Cursor glow effect */
+        .cursor-glow {
+          position: fixed;
+          width: 300px;
+          height: 300px;
+          pointer-events: none;
+          z-index: 1;
+          background: radial-gradient(
+            circle,
+            rgba(59, 130, 246, 0.1) 0%,
+            rgba(59, 130, 246, 0.03) 40%,
+            transparent 70%
+          );
+          border-radius: 50%;
+          transition: opacity 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+          .cursor-glow {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(
+              circle,
+              rgba(59, 130, 246, 0.15) 0%,
+              rgba(59, 130, 246, 0.05) 40%,
+              transparent 70%
+            );
+          }
+        }
 
         /* Enhanced transitions for timeline sections */
         .timeline-section {
@@ -531,26 +567,36 @@ export default function Home() {
       >
         {/* Welcome section */}
         <section id="welcome" className="snap-start h-screen flex items-center justify-center relative z-10">
-          <div className="text-center max-w-5xl px-6 relative z-10">
-            <div className="text-6xl md:text-8xl font-bold text-white mb-4 font-mono">
+          <div className="text-center max-w-5xl px-4 sm:px-6 relative z-10">
+            <div className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 font-mono">
               Maxton Lenox
             </div>
-            <div className="text-2xl md:text-3xl text-blue-400 font-mono mb-8">
+            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-blue-400 font-mono mb-6 sm:mb-8">
               Full-Stack Software Engineer
             </div>
-            <div className="text-xl md:text-2xl text-gray-100 font-mono mb-10 max-w-4xl mx-auto leading-relaxed">
+            <div className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-100 font-mono mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed">
               Firmware • Embedded Systems • Web Development
             </div>
-            <div className="flex flex-wrap justify-center gap-6 mb-10 text-base md:text-lg font-mono">
-              <a href="https://linkedin.com/in/maxtonlenox" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-6 mb-8 sm:mb-10 text-sm sm:text-base md:text-lg font-mono">
+              <a
+                href="https://linkedin.com/in/maxtonlenox"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 transform shadow-lg hover:shadow-blue-500/25 text-center"
+              >
                 💼 LinkedIn
               </a>
-              <span className="text-gray-200">📍 San Francisco, CA</span>
-              <a href="https://github.com/maxton135" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+              <span className="text-gray-200 px-4 py-2 text-center">📍 San Francisco, CA</span>
+              <a
+                href="https://github.com/maxton135"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 transform shadow-lg hover:shadow-blue-500/25 text-center"
+              >
                 🐙 GitHub
               </a>
             </div>
-            <div className="text-base md:text-lg text-gray-200 font-mono">
+            <div className="text-sm sm:text-base md:text-lg text-gray-200 font-mono">
               ↓ Scroll to travel back through my career ↓
             </div>
           </div>
@@ -566,9 +612,9 @@ export default function Home() {
               <TimelineSection
                 className="w-full relative z-10"
               >
-              <div data-section={item.id} className="max-w-4xl mx-auto px-6">
+              <div data-section={item.id} className="max-w-4xl mx-auto px-4 sm:px-6">
                 <div
-                  className="timeline-section bg-black/80 backdrop-blur-sm rounded-lg p-8 border border-gray-800 relative cursor-pointer hover:border-gray-600 hover:bg-black/90 group"
+                  className="timeline-section bg-black/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 md:p-8 border border-gray-800 relative cursor-pointer hover:border-gray-600 hover:bg-black/90 group"
                   onClick={() => handleSectionClick(item.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -582,45 +628,46 @@ export default function Home() {
                   aria-describedby={`desc-${item.id}`}
                 >
                   {/* Year badge */}
-                  <div className="absolute -top-4 -left-4 bg-blue-600 text-white px-4 py-2 rounded-full font-mono text-sm font-bold">
+                  <div className="absolute -top-3 -left-3 sm:-top-4 sm:-left-4 bg-blue-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full font-mono text-xs sm:text-sm font-bold">
                     {item.year}
                   </div>
 
                   {/* Click to expand indicator */}
-                  <div className="absolute top-4 right-4 opacity-70 group-hover:opacity-100 transition-all duration-300">
-                    <div className="bg-blue-600/90 text-white px-3 py-2 rounded-full font-mono text-sm flex items-center gap-2 expand-indicator">
-                      <span>{item.expandText || "Click to expand"}</span>
+                  <div className="absolute top-2 right-2 sm:top-4 sm:right-4 opacity-70 group-hover:opacity-100 transition-all duration-300">
+                    <div className="bg-blue-600/90 text-white px-2 py-1 sm:px-3 sm:py-2 rounded-full font-mono text-xs sm:text-sm flex items-center gap-1 sm:gap-2 expand-indicator">
+                      <span className="hidden sm:inline">{item.expandText || "Click to expand"}</span>
+                      <span className="sm:hidden">View</span>
                       <span className="text-blue-200 transition-transform group-hover:translate-x-1">→</span>
                     </div>
                   </div>
 
                   {/* Period indicator */}
-                  <div className="text-blue-400 font-mono text-sm mb-2">
+                  <div className="text-blue-400 font-mono text-xs sm:text-sm mb-2 pt-4 sm:pt-0">
                     {item.period}
                   </div>
 
                   {/* Main content */}
-                  <h2 className="text-4xl font-bold text-white mb-2 font-mono">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 font-mono">
                     {item.content.title}
                   </h2>
-                  <h3 className="text-xl text-blue-300 mb-6 font-mono">
+                  <h3 className="text-lg sm:text-xl text-blue-300 mb-4 sm:mb-6 font-mono">
                     {item.content.subtitle}
                   </h3>
-                  <p id={`desc-${item.id}`} className="text-gray-100 text-lg leading-relaxed font-mono mb-6">
+                  <p id={`desc-${item.id}`} className="text-sm sm:text-base md:text-lg text-gray-100 leading-relaxed font-mono mb-4 sm:mb-6">
                     {item.content.description}
                   </p>
 
-                  {/* Highlights */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* Highlights - Hidden on mobile */}
+                  <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
                     {item.content.highlights.map((highlight, idx) => (
-                      <div key={idx} className="bg-gray-800/50 rounded-lg px-3 py-2 text-center">
-                        <span className="text-white font-mono text-sm">{highlight}</span>
+                      <div key={idx} className="bg-gray-800/50 rounded-lg px-2 py-2 sm:px-3 text-center">
+                        <span className="text-white font-mono text-xs sm:text-sm">{highlight}</span>
                       </div>
                     ))}
                   </div>
 
                   {/* Progress indicator */}
-                  <div className="flex justify-center mt-8">
+                  <div className="flex justify-center mt-4 sm:mt-6">
                     <div className="text-gray-200 font-mono text-xs">
                       {index + 1} of {timelineData.length}
                     </div>
@@ -633,13 +680,13 @@ export default function Home() {
         })}
 
         {/* More About Me Section - Gallery */}
-        <section className="snap-start h-screen flex items-center justify-center relative z-10 py-20">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center font-mono">
+        <section className="snap-start h-screen flex items-center justify-center relative z-10 py-12 sm:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 sm:mb-12 text-center font-mono">
               More About Me
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
               {aboutMePhotos.map((photo, index) => (
                 <div
                   key={index}
@@ -649,15 +696,15 @@ export default function Home() {
                   <img
                     src={`/about/${photo.image}`}
                     alt={photo.caption}
-                    className="w-full h-48 md:h-56 object-cover"
+                    className="w-full h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
                   />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="text-white text-center px-3 py-2 font-mono text-sm">
-                      <div className="bg-blue-600/90 px-3 py-1 rounded-full">
-                        View Photo
+                    <div className="text-white text-center px-2 py-1 sm:px-3 sm:py-2 font-mono text-xs sm:text-sm">
+                      <div className="bg-blue-600/90 px-2 py-1 sm:px-3 rounded-full">
+                        View
                       </div>
                     </div>
                   </div>
@@ -683,13 +730,13 @@ export default function Home() {
           onClick={handleClosePhoto}
         >
           <div
-            className="relative max-w-4xl max-h-[90vh] bg-black/90 rounded-lg overflow-hidden border border-gray-600"
+            className="relative max-w-4xl max-h-[90vh] bg-black/90 rounded-lg overflow-hidden border border-gray-600 mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
               onClick={handleClosePhoto}
-              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/80 hover:bg-black/90 border border-gray-600 hover:border-gray-400 rounded-full flex items-center justify-center text-white text-lg transition-all duration-200 hover:scale-110"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-black/80 hover:bg-black/90 border border-gray-600 hover:border-gray-400 rounded-full flex items-center justify-center text-white text-lg transition-all duration-200 hover:scale-110"
             >
               ×
             </button>
@@ -698,15 +745,15 @@ export default function Home() {
             <img
               src={`/about/${selectedPhoto.image}`}
               alt={selectedPhoto.caption}
-              className="w-full h-auto max-h-[70vh] object-contain"
+              className="w-full h-auto max-h-[60vh] sm:max-h-[70vh] object-contain"
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
             />
 
             {/* Caption */}
-            <div className="p-6 text-center">
-              <p className="text-white font-mono text-lg leading-relaxed">
+            <div className="p-4 sm:p-6 text-center">
+              <p className="text-white font-mono text-sm sm:text-base md:text-lg leading-relaxed">
                 {selectedPhoto.caption}
               </p>
             </div>
